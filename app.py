@@ -166,7 +166,7 @@ st.plotly_chart(fig)
 st.write("---")
 
 st.markdown(analysis_content.get(active_region, "### Region analysis is not available."))
-st.write("### Carbon Emissions Released Based on Hectares of Forest Lost")
+st.write("### Carbon Emissions Released Based on Forest Lost")
 st.write("Adjust the slider below to see how much carbon is released into the atmosphere based on the number of hectares of forest lost.")
 
 reduction_percent = st.slider(
