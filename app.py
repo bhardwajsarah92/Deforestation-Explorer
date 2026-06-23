@@ -2,9 +2,15 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-st.title("Deforestation Over Time: Our Planet in Numbers")
+st.title("Deforestation: Our Planet in Numbers")
+st.image(
+    "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=1200&auto=format&fit=crop",
+    caption="Industrial logging impacts on forest ecosystems.",
+    use_container_width=True
+)
 st.write("Welcome to the interactive data explorer. This website examines deforestation patterns across the world, how they have changed over time, and what causes them.")
 st.write("Feel free to check out the **Take Action!** section to see how you can do your part in helping the climate!")
+
 
 
 col1, col2, col3 = st.columns(3)
@@ -16,6 +22,15 @@ with col2:
 
 with col3:
     st.metric(label="**Worst Recent Year**", value="2024", delta="+540% vs 2023", delta_color="inverse")
+
+
+with st.expander("🔎 Click Here for An In-Depth Analysis of the Causes of Deforestation"):
+    st.subheader("Key Climate Insights:")
+    st.markdown("""
+                * **The Core Threat:** According to the World Resource Institute, the tropics has lost 4.3 million hectares of primary forest in 2025; an area larger than Switzerland.
+                * **The Impact:** Deforestation is a detrimental problem, destroying ecosystems, accelerating global warming and threatening humans.
+                * **The Power of Policy:** The 36% decrease in 2025 was primarily driven by stronger anti-deforestation policies and reduced fire activity.
+                """)
 
 # Data Taken from University of Maryland Global Land Analysis and Discovery (GLAD)
 if "current_country" not in st.session_state:
@@ -44,7 +59,7 @@ all_country_data = {
     }
 }
 
-st.write("Explore Specific Regions:")
+st.write(" **Explore Specific Regions**:")
 btn_col1, btn_col2, btn_col3, btn_col4, btn_col5 = st.columns(5)
 
 with btn_col1:
@@ -118,24 +133,27 @@ analysis_content = {
     """,
 
     "Indonesia": """
-    ### Indonesia, Peatlands & Biodiversity Loss
-    Indonesia's forest loss is strongly linked to peatland drainage, fires, and plantation expansion.
-    * Peatland fires emit large volumes of carbon and destroy critical biodiversity.
-    * Conserving peatland forests is essential for climate stability in Southeast Asia.
+    ### Indonesia & Biodiversity Loss
+   Indonesia is home to approximately 93 million hectares of forest, covering about 50.3% of the total land area. This makes Indonesia one of the largest rainforest nations in the world.
+    * Clearing land fragment habitats severely threatens endangered species such as the Bornean orangutan and Sumatran Tiger.
+    * According to the World Resource Institute, Indonesia has lost approximately 74 million hectares of primary forest since 1990. 
+    * As of 2020, Indonesia's forest cover has been reduced by approximately 50.3% from what it used to be.
     """,
 
     "DR Congo": """
     ### DR Congo & The Congo Basin Rainforest
-    The Congo Basin is the world's second-largest rainforest and a key carbon sink.
-    * Logging, agriculture, and mining threaten the region's ability to store carbon.
-    * Protecting the Congo Basin is vital for regional climate resilience and biodiversity.
+    The Congo Basin is the largest remaining net carbon sink, removing on average of 160 million tons of carbon dioxide. 
+    * As seen from the graph alongside the research done by Global Forest Watch, the Congo Basin has seen a 14.2% increase in primary forest loss in 2024.
+    * In recent years, cocoa farming has emerged as the primary agriculture driver. In DRC, cocoa production has quadrupled between 2015 and 2023. Scientists predict these practices may lead to forest loss in highly forested landscapes such as Tsopo, Equateur and Orential provinces in DRC.
+    * Charcoal Production is another major driver of forest loss. Although it does not directly lead to permanent loss of the forest, it causes widespread degradation. In DRC, around 95% of the population relies on biomass, including charcoal for energy.
     """,
 
     "Bolivia": """
-    ### Bolivia & The Amazon Rainforest
-    Bolivia's deforestation trends are tied to cattle ranching, soy expansion, and fire.
-    * The Bolivian Amazon is a critical corridor linking major rainforest regions.
-    * Strong land-use policies are needed to preserve biodiversity and local climate.
+    ### Alarming Rates of Deforestation in Bolivia
+    Bolivia's deforestation trends are tied to soy expansion, and fire.
+    * Deforestation Rates in Bolivia have increased by 259% over the last eight years driven primarily by agriculture expansion.
+    * Almost three quarters of recent deforestation has taken place in the eastern departement of Santa Cruz, where most of Bolivia's soy production is located.
+    * Findings from New Trase Data published in August show that the soy production in 2020 was linked to 77,090 ha of deforestation and conversion, increasing to 105,600 ha in 2021. 
     """
 }
 
@@ -147,26 +165,42 @@ st.write("Select a region above and review the chart below.")
 st.plotly_chart(fig)
 st.write("---")
 
-# Show chart outside the tabs
+st.markdown(analysis_content.get(active_region, "### Region analysis is not available."))
+st.write("### Carbon Emissions Released Based on Hectares of Forest Lost")
+st.write("Adjust the slider below to see how much carbon is released into the atmosphere based on the number of hectares of forest lost.")
 
-tab1, tab2 = st.tabs(["Analysis", "Take Action"])
+reduction_percent = st.slider(
+    "Select a Target Deforestation Reduction (%):",
+    min_value=0, max_value=100, value=25, step=1)
 
-with tab1:
-    st.markdown(analysis_content.get(active_region, "### Region analysis is not available."))
+projected_yearly_loss_ha = 4000000
+co2_per_hectare_tons = 600
 
-    with st.expander("🔎 Click Here for An In-Depth Analysis of the Causes of Deforestation"):
-        st.subheader("Key Climate Insights:")
-        st.markdown("""
-                     * **The Core Threat:** According to the World Resource Institute, the tropics has lost 4.3 million hectares of primary forest in 2025; an area larger than Switzerland.
-                     * **The Impact:** Deforestation is a detrimental problem, destroying ecosystems, accelerating global warming and threatening humans.
-                     * **The Power of Policy:** The 36% decrease in 2025 was primarily driven by stronger anti-deforestation policies and reduced fire activity.
-                     """)
+hectares_saved_yearly = projected_yearly_loss_ha* (reduction_percent/100)
+co2_prevented_yearly_tons = hectares_saved_yearly * co2_per_hectare_tons
 
-with tab2:
-    st.subheader("How You Can Make an Impact")
-    st.write("* **Eat less beef**: Cattle ranching is responsible for about 41% of global deforestation, especially in the Amazon Rainforest.")
-    st.write("* **Reduce soy consumption**: Large forest tracts are cleared for soy fields, primarily used as livestock feed.")
-    st.write("* **Adopt Meatless Mondays**: Cutting meat consumption by 20% can help dramatically scale back the demand for new agricultural land.")
-    st.write("* **Buy FSC-certified items**: Check wood, paper, and tissue products for the \"check tree\" label from the Forest Stewardship Council.")
-    st.write("* **Print on Both Sides**: Use \"good on one side\" paper scraps for notes before throwing them away.")
-    st.write("* **Avoid Unsustainable Palm Oil**: Look at ingredient labels on snack and cosmetics to avoid products driving tropical deforestation.")
+hectares_saved_10yr = hectares_saved_yearly * 10 
+co2_prevented_10year_tons = co2_prevented_yearly_tons * 10
+
+st.write(f"### Projected Impact over 10 years with {reduction_percent}% Reduction")
+
+card_col1, card_col2 = st.columns(2)
+
+with card_col1: 
+    st.metric(
+        label="Rainforest Area Saved",
+        value=f"{hectares_saved_10yr:,.0f} Hectares",
+        delta=f"+{hectares_saved_yearly:,.0f} Hectares/Year"
+    )
+
+with card_col2:
+    st.metric(
+        label="CO₂ Emissions Prevented", 
+        value=f"{co2_prevented_10year_tons:,.0f} Metric Tons",
+        delta=f"-{co2_prevented_yearly_tons:,.0f} tons / year"
+    )
+
+st.info(
+    f"**Did you know?** Saving {co2_prevented_10year_tons:,.0f} metric tons of $CO_2$ is equivalent to "
+    f"taking roughly { (co2_prevented_10year_tons / 4.6):,.0f} gasoline-powered passenger vehicles off the road for an entire year!"
+)
